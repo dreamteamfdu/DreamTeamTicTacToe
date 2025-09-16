@@ -9,13 +9,72 @@ int main()
     std::cout << "Hello, Tic-tac-toe!\n";
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+/*
+User requirements:
+    - X goes first
+    - 3x3 grid
+    - Program will tell players how to play the game
+    - Give players a way to pick their symbol and enter their name into program
+    - Give the player a way to input their spot
+    - Make sure players cant write over another player's space, give them an error, and let them try to input again
+    - Make sure players cant enter an invalid spot that doesnt exist, give them an error, and let them try to input again
+    - Switch the turns after a player successfully picks a spot
+    - Have the game check after a player enters their spot for a winner
+    - When someone wins, it will say their name and that they won, and then add to a score showing many games they won
+    - Give the players the option to play again
+    - If the game ends in a tie, no points are awarded and players are given option to play again
+    - Adding in singleplayer is a stretch goal
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+
+Design: 
+    - We should use classes for this project.
+        - Board class, player class
+    - Board class (Design item)
+    - How to break up the work
+        - 3 coders (Elias, Matt, and John), 2 testers (Anthony and Alina)
+           - Should testers fix code if they discover something that breaks? Yes?
+              - Make sure to detail testing process and fix applied in commit message
+    - Make sure it runs in Visual Studio
+    - Make sure code is clear and understandable
+        - dont do anything weird, make sure to comment what code does
+    -For testers, explicitly explain testing process, issues, and resolutions
+        - can be done as a commit message and as a block comment
+    - Create README.md explaining how to play
+
+    Bonus:
+
+    - Maybe make way for players to keep playing and then track wins until they stop playing
+
+Implementation (pseudocode):
+    create class board with char 3x3 matrix and winner bool in private
+    create constructors in public
+    create check function in public
+        check for winners and draws
+    create change value function in public
+        check if space is not X or O
+        if true
+            change value at position to player char
+    create get winner function
+    crete print function in public
+
+    create player class with char symbol and string name in private
+    create constructors in public
+    create getters and setters
+
+    in main
+        construct board
+        construct X and O player with names
+
+        while no winner
+            print function
+            change value function
+            check function
+            if winner
+                print player name is the winner
+
+Tests:
+    - Two rounds of testing (To determine order with Anthony and Alina)
+    - Tests should be verbose and well documented
+    - Create a documentation form on the test. How the test works, what happened when you ran the test, what caused the issues, how the coders can fix issues
+    - Test process, results, and fixes to be clearly documented in commit message
+*/
