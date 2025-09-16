@@ -62,6 +62,7 @@ int main()
         create turn switcher
         create win checker
         refine game loop
+        fix error message when you input multichar strings
     */
     cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
     size_t row;
