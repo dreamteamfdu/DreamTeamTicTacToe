@@ -18,13 +18,13 @@ public:
         else if (j - 1 >= cols) { return false; }
         else { return true; }
     }
-    bool changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
+    void changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
         if (isInBounds(i, j)) {
             board[i - 1][j - 1] = p;
-            return true;
         }
         else {
-            return false;
+            cout << "ERR: input of row or column was out of bounds" << endl;
+            return;
         }
     }
     void print() { // Print function iterates through the rows and columns, printing everything out into a 3x3 grid.
@@ -56,22 +56,38 @@ public:
 
 int main()
 {
-    std::cout << "Hello, Tic-tac-toe!\n";
+    /*
+    TODO:
+        implement player classes
+        create turn switcher
+        create win checker
+        refine game loop
+    */
     cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
     size_t row;
     size_t col;
     Board b; // Initialize the board
+    bool play = true;
 
-    b.print(); // Print the board
+    while (play) {
 
-    cout << "Select a row: ";
-    cin >> row;
-    cout << "Select a column: ";
-    cin >> col;
-    b.changeAtPosition(row, col, 'X');
+        b.print(); // Print the board
 
+        cout << "Select a row: ";
+        while (!(cin >> row)) { // Inout validation for rows
+            cout << "invalid input. Please enter a valid input: ";
+            cin.clear();
+            cin.ignore();
+        }
+        cout << "Select a column: ";
+        while (!(cin >> col)) { // Input validation for columns
+            cout << "Invalid input, please enter a vailid input: ";
+            cin.clear();
+            cin.ignore();
+        }
+        b.changeAtPosition(row, col, 'X');
+    }
 
-    b.print(); // Print the board
 
     return 0;
 }
