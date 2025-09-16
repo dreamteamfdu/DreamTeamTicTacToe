@@ -14,13 +14,13 @@ public:
     }
     bool getWinner() { return winner; } // Winner getter
     bool isInBounds(size_t i, size_t j) { // checks to see if the entered points are within the bounds of the matrix
-        if (i-1 >= rows) { return false; }
-        else if (j-1 >= cols) { return false; }
+        if (i - 1 >= rows) { return false; }
+        else if (j - 1 >= cols) { return false; }
         else { return true; }
     }
     bool changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
         if (isInBounds(i, j)) {
-            board[i-1][j-1] = p;
+            board[i - 1][j - 1] = p;
             return true;
         }
         else {
@@ -56,6 +56,7 @@ public:
 
 int main()
 {
+    std::cout << "Hello, Tic-tac-toe!\n";
     cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
     size_t row;
     size_t col;
