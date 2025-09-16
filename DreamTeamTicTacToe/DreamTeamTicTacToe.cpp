@@ -19,16 +19,16 @@ public:
         else { return true; }
     }
     void changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
-        if (!isInBounds(1, j)) {
+        if (!isInBounds(i, j)) {
             cout << "ERR: input of row or column was out of bounds" << endl;
             return;
         }
-        else if (board[i][j] != ' ') {
+        else if (board[i-1][j-1] != ' ') {
             cout << "ERR: Spot is already taken" << endl;
             return;
         }
         else {
-            board[i][j] = p;
+            board[i-1][j-1] = p;
             return;
         }
     }
