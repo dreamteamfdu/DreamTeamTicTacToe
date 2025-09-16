@@ -19,11 +19,16 @@ public:
         else { return true; }
     }
     void changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
-        if (isInBounds(i, j)) {
-            board[i - 1][j - 1] = p;
+        if (!isInBounds(1, j)) {
+            cout << "ERR: input of row or column was out of bounds" << endl;
+            return;
+        }
+        else if (board[i][j] != ' ') {
+            cout << "ERR: Spot is already taken" << endl;
+            return;
         }
         else {
-            cout << "ERR: input of row or column was out of bounds" << endl;
+            board[i][j] = p;
             return;
         }
     }
@@ -75,7 +80,7 @@ int main()
         b.print(); // Print the board
 
         cout << "Select a row: ";
-        while (!(cin >> row)) { // Inout validation for rows
+        while (!(cin >> row)) { // Input validation for rows
             cout << "invalid input. Please enter a valid input: ";
             cin.clear();
             cin.ignore();
