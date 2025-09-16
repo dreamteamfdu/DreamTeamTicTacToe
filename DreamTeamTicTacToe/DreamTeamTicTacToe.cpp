@@ -1,12 +1,80 @@
 // DreamTeamTicTacToe.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
+#include <vector>
 #include <iostream>
 using namespace std;
 
+class Board {
+private:
+    size_t rows = 3; // Sets row count
+    size_t cols = 3; // Sets column count
+    vector <vector<char>> board; // 2d vector
+    bool winner; // Bool to track the winner
+public:
+    Board() : board(rows, vector<char>(cols, ' ')) { // Constructor for a 3x3 matrix. Sets winner to false
+        winner = false;
+    }
+    bool getWinner() { return winner; } // Winner getter
+    bool isInBounds(size_t i, size_t j) { // checks to see if the entered points are within the bounds of the matrix
+        if (i-1 >= rows) { return false; }
+        else if (j-1 >= cols) { return false; }
+        else { return true; }
+    }
+    bool changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
+        if (isInBounds(i, j)) {
+            board[i-1][j-1] = p;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    void print() { // Print function iterates through the rows and columns, printing everything out into a 3x3 grid.
+        cout << "   1 2 3" << endl;
+        for (size_t i = 0; i < rows; i++) {
+            cout << i + 1 << ": ";
+            for (size_t j = 0; j < cols; j++) {
+                cout << board[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+class Player {
+private:
+    char piece;
+    string name;
+public:
+    Player() { // Empty constructor
+        piece = ' ';
+        name = " ";
+    }
+    Player(char p, string n) { // Normal constructor
+        piece = p;
+        name = n;
+    }
+};
+
 int main()
 {
-    std::cout << "Hello, Tic-tac-toe!\n";
+    cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
+    size_t row;
+    size_t col;
+    Board b; // Initialize the board
+
+    b.print(); // Print the board
+
+    cout << "Select a row: ";
+    cin >> row;
+    cout << "Select a column: ";
+    cin >> col;
+    b.changeAtPosition(row, col, 'X');
+
+
+    b.print(); // Print the board
+
+    return 0;
 }
 
 /*
