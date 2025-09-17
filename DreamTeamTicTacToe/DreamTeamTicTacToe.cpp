@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <limits>
+#include <cctype> // for tolower and toupper
+#include <algorithm> // for transform
 using namespace std;
 
 class Board {
@@ -75,6 +77,14 @@ public:
             cout << '\n';
         }
     }
+    void clear() { // Print function iterates through the rows and columns, printing everything out into a 3x3 grid.
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                board[i][j] = ' ';
+            }
+            cout << '\n';
+        }
+    }
 };
 
 class Player {
@@ -87,7 +97,50 @@ public:
     char getPiece() const { return piece; }
     const string& getName() const { return name; }
 };
+void displayRulesAndInstructions() {
+    cout << "\n=== TIC-TAC-TOE RULES & INSTRUCTIONS ===\n\n";
+    cout << "OBJECTIVE:\n";
+    cout << "Be the first player to get 3 of your marks in a row\n";
+    cout << "(horizontally, vertically, or diagonally)\n\n";
 
+    cout << "HOW TO PLAY:\n";
+    cout << "1. Players take turns placing their mark (X or O)\n";
+    cout << "2. Enter row number (1-3) and column number (1-3)\n";
+    cout << "3. The board coordinates are as follows:\n\n";
+
+    // Show example board with coordinates
+    cout << "   1 2 3\n";
+    cout << "1: . . .\n";
+    cout << "2: . . .\n";
+    cout << "3: . . .\n\n";
+
+    cout << "EXAMPLE: To place your mark in the center, enter:\n";
+    cout << "Row: 2\n";
+    cout << "Column: 2\n\n";
+
+    cout << "WINNING CONDITIONS:\n";
+    cout << "- Three in a row horizontally\n";
+    cout << "- Three in a row vertically\n";
+    cout << "- Three in a row diagonally\n\n";
+
+    cout << "If all spaces are filled with no winner, it's a tie!\n";
+    cout << "============================================\n\n";
+}
+
+string toLower(const string& str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(),
+        [](unsigned char c) { return tolower(c); });
+    return lowerStr;
+}
+
+// Function to convert string to uppercase
+string toUpper(const string& str) {
+    string upperStr = str;
+    transform(upperStr.begin(), upperStr.end(), upperStr.begin(),
+        [](unsigned char c) { return toupper(c); });
+    return upperStr;
+}
 int main() {
     /*
     TODO:
@@ -98,7 +151,24 @@ int main() {
         fix error message when you input multichar strings
     */
     cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
-
+    string choice;
+    bool toPlay = false;
+    do {
+        cout << "Enter \"Rules\" to read the Rules\nOR\nEnter \"Play\" to Play" << endl;
+        cin >> choice;
+        if (toLower(choice)._Equal("rules")) {
+            displayRulesAndInstructions();
+        }
+        else if (toLower(choice)._Equal("play"))
+        {
+            toPlay = true;
+        }
+        else {
+            cout << "Invalid input" << endl;
+        }
+        cin.clear();
+    } while (toPlay == false);
+    toPlay = false;
     // --- Player initialization ---
     string p1Name, p2Name;
     cout << "Enter Player 1 name (plays as X): ";
@@ -116,44 +186,68 @@ int main() {
     auto nameFor = [&](char piece) -> const string& {
         return (piece == 'X') ? p1.getName() : p2.getName();
     };
-
     size_t row, col;  // <--- declare ONCE
-
-    while (play) { // Print the board
-        b.print();
-
-        cout << nameFor(turn) << " (" << turn << ") - select a row: ";
-        while (!(cin >> row)) { // Input validation for rows
-            cout << "Invalid input. Enter a number: ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-        cout << nameFor(turn) << " (" << turn << ") - select a column: ";
-        while (!(cin >> col)) { // Input validation for colums
-            cout << "Invalid input. Enter a number: ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-
-        if (!b.changeAtPosition(row, col, turn)) {
-            // invalid move; same player tries again
-            continue;
-        }
-
-        char state = b.checkGameState();
-        if (state == 'X' || state == 'O') {
+    bool repeatPlay = false;
+    do {
+        while (play) { // Print the board
             b.print();
-            cout << nameFor(state) << " wins!\n";
-            play = false;
-        } else if (state == 'T') {
-            b.print();
-            cout << "It's a tie.\n";
-            play = false;
-        } else {
-            turn = (turn == 'X') ? 'O' : 'X';
-        }
-    }
 
+            cout << nameFor(turn) << " (" << turn << ") - select a row: ";
+            while (!(cin >> row)) { // Input validation for rows
+                cout << "Invalid input. Enter a number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            cout << nameFor(turn) << " (" << turn << ") - select a column: ";
+            while (!(cin >> col)) { // Input validation for colums
+                cout << "Invalid input. Enter a number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
+            if (!b.changeAtPosition(row, col, turn)) {
+                // invalid move; same player tries again
+                continue;
+            }
+
+            char state = b.checkGameState();
+            if (state == 'X' || state == 'O') {
+                b.print();
+                cout << nameFor(state) << " wins!\n";
+                play = false;
+            }
+            else if (state == 'T') {
+                b.print();
+                cout << "It's a tie.\n";
+                play = false;
+            }
+            else {
+                turn = (turn == 'X') ? 'O' : 'X';
+            }
+        }
+        string replayChoice = "";
+        bool validReplayChoice = false;
+        do {
+            cout << "Would you like to play again? Y/N" << endl;
+            cin >> replayChoice;
+            if (toLower(replayChoice)._Equal("y")) {
+                repeatPlay = true;
+                play = true;
+                b.clear();
+                validReplayChoice = true;
+            }
+            else if (toLower(replayChoice)._Equal("n"))
+            {
+                repeatPlay = false;
+                validReplayChoice = true;
+            }
+            else {
+                cout << "Invalid input" << endl;
+            }
+        } while(validReplayChoice == false);
+        replayChoice = "";
+    } while (repeatPlay);
+    cout << "Thank you for playing!!!\nGoodbye!!!" << endl;
     return 0;
 }
 
