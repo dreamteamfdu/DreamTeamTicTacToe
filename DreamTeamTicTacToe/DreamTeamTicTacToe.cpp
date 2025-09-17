@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <limits>
+#include <cctype> // for tolower and toupper
+#include <algorithm> // for transform
 using namespace std;
 
 class Board {
@@ -19,18 +21,18 @@ public:
         return (i >= 1 && i <= rows && j >= 1 && j <= cols);
     }
 
-    char at(size_t i, size_t j) const { return board[i-1][j-1]; }
+    char at(size_t i, size_t j) const { return board[i - 1][j - 1]; }
 
     bool changeAtPosition(size_t i, size_t j, char p) { // Checks to see if position is in bounds, if it is, changes at position
         if (!isInBounds(i, j)) {
             cout << "ERR: input of row or column was out of bounds\n";
             return false;
         }
-        if (board[i-1][j-1] != ' ') {
+        if (board[i - 1][j - 1] != ' ') {
             cout << "ERR: Spot is already taken\n";
             return false;
         }
-        board[i-1][j-1] = p;
+        board[i - 1][j - 1] = p;
         return true;
     }
 
@@ -43,23 +45,23 @@ public:
         for (char who : {'X', 'O'}) {
             // rows
             for (size_t r = 1; r <= rows; ++r)
-                if (three(at(r,1), at(r,2), at(r,3), who))
+                if (three(at(r, 1), at(r, 2), at(r, 3), who))
                     return winner = true, who;
             // cols
             for (size_t c = 1; c <= cols; ++c)
-                if (three(at(1,c), at(2,c), at(3,c), who))
+                if (three(at(1, c), at(2, c), at(3, c), who))
                     return winner = true, who;
             // diagonals
-            if (three(at(1,1), at(2,2), at(3,3), who))
+            if (three(at(1, 1), at(2, 2), at(3, 3), who))
                 return winner = true, who;
-            if (three(at(1,3), at(2,2), at(3,1), who))
+            if (three(at(1, 3), at(2, 2), at(3, 1), who))
                 return winner = true, who;
         }
         // tie
         bool anyEmpty = false;
         for (size_t r = 1; r <= rows; ++r)
             for (size_t c = 1; c <= cols; ++c)
-                if (at(r,c) == ' ') anyEmpty = true;
+                if (at(r, c) == ' ') anyEmpty = true;
 
         if (!anyEmpty) return 'T';
         return ' ';
@@ -71,6 +73,14 @@ public:
             cout << i + 1 << ": ";
             for (size_t j = 0; j < cols; j++) {
                 cout << board[i][j] << ' ';
+            }
+            cout << '\n';
+        }
+    }
+    void clear() { // Print function iterates through the rows and columns, printing everything out into a 3x3 grid.
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                board[i][j] = ' ';
             }
             cout << '\n';
         }
@@ -87,7 +97,50 @@ public:
     char getPiece() const { return piece; }
     const string& getName() const { return name; }
 };
+void displayRulesAndInstructions() {
+    cout << "\n=== TIC-TAC-TOE RULES & INSTRUCTIONS ===\n\n";
+    cout << "OBJECTIVE:\n";
+    cout << "Be the first player to get 3 of your marks in a row\n";
+    cout << "(horizontally, vertically, or diagonally)\n\n";
 
+    cout << "HOW TO PLAY:\n";
+    cout << "1. Players take turns placing their mark (X or O)\n";
+    cout << "2. Enter row number (1-3) and column number (1-3)\n";
+    cout << "3. The board coordinates are as follows:\n\n";
+
+    // Show example board with coordinates
+    cout << "   1 2 3\n";
+    cout << "1: . . .\n";
+    cout << "2: . . .\n";
+    cout << "3: . . .\n\n";
+
+    cout << "EXAMPLE: To place your mark in the center, enter:\n";
+    cout << "Row: 2\n";
+    cout << "Column: 2\n\n";
+
+    cout << "WINNING CONDITIONS:\n";
+    cout << "- Three in a row horizontally\n";
+    cout << "- Three in a row vertically\n";
+    cout << "- Three in a row diagonally\n\n";
+
+    cout << "If all spaces are filled with no winner, it's a tie!\n";
+    cout << "============================================\n\n";
+}
+
+string toLower(const string& str) {
+    string lowerStr = str;
+    transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(),
+        [](unsigned char c) { return tolower(c); });
+    return lowerStr;
+}
+
+// Function to convert string to uppercase
+string toUpper(const string& str) {
+    string upperStr = str;
+    transform(upperStr.begin(), upperStr.end(), upperStr.begin(),
+        [](unsigned char c) { return toupper(c); });
+    return upperStr;
+}
 int main() {
     /*
     TODO:
@@ -98,7 +151,24 @@ int main() {
         fix error message when you input multichar strings
     */
     cout << "Hello, Tic-tac-toe!\n"; // comment explaining what you did
-
+    string choice;
+    bool toPlay = false;
+    do {
+        cout << "Enter \"Rules\" to read the Rules\nOR\nEnter \"Play\" to Play" << endl;
+        cin >> choice;
+        if (toLower(choice)._Equal("rules")) {
+            displayRulesAndInstructions();
+        }
+        else if (toLower(choice)._Equal("play"))
+        {
+            toPlay = true;
+        }
+        else {
+            cout << "Invalid input" << endl;
+        }
+        cin.clear();
+    } while (toPlay == false);
+    toPlay = false;
     // --- Player initialization ---
     string p1Name, p2Name;
     cout << "Enter Player 1 name (plays as X): ";
@@ -115,46 +185,70 @@ int main() {
 
     auto nameFor = [&](char piece) -> const string& {
         return (piece == 'X') ? p1.getName() : p2.getName();
-    };
-
+        };
     size_t row, col;  // <--- declare ONCE
-
-    while (play) { // Print the board
-        b.print();
-
-        cout << nameFor(turn) << " (" << turn << ") - select a row: ";
-        while (!(cin >> row)) { // Input validation for rows
-            cout << "Invalid input. Enter a number: ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-        cout << nameFor(turn) << " (" << turn << ") - select a column: ";
-        while (!(cin >> col)) { // Input validation for colums
-            cout << "Invalid input. Enter a number: ";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-
-        if (!b.changeAtPosition(row, col, turn)) {
-            // invalid move; same player tries again
-            continue;
-        }
-
-        char state = b.checkGameState();
-        if (state == 'X' || state == 'O') {
+    bool repeatPlay = false;
+    do {
+        while (play) { // Print the board
             b.print();
-            cout << nameFor(state) << " wins!\n";
-            play = false;
-        } else if (state == 'T') {
-            b.print();
-            cout << "It's a tie.\n";
-            play = false;
-        } else {
-            turn = (turn == 'X') ? 'O' : 'X';
-        }
-    }
 
-    return 0; // Returns 0
+            cout << nameFor(turn) << " (" << turn << ") - select a row: ";
+            while (!(cin >> row)) { // Input validation for rows
+                cout << "Invalid input. Enter a number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            cout << nameFor(turn) << " (" << turn << ") - select a column: ";
+            while (!(cin >> col)) { // Input validation for colums
+                cout << "Invalid input. Enter a number: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
+            if (!b.changeAtPosition(row, col, turn)) {
+                // invalid move; same player tries again
+                continue;
+            }
+
+            char state = b.checkGameState();
+            if (state == 'X' || state == 'O') {
+                b.print();
+                cout << nameFor(state) << " wins!\n";
+                play = false;
+            }
+            else if (state == 'T') {
+                b.print();
+                cout << "It's a tie.\n";
+                play = false;
+            }
+            else {
+                turn = (turn == 'X') ? 'O' : 'X';
+            }
+        }
+        string replayChoice = "";
+        bool validReplayChoice = false;
+        do {
+            cout << "Would you like to play again? Y/N" << endl;
+            cin >> replayChoice;
+            if (toLower(replayChoice)._Equal("y")) {
+                repeatPlay = true;
+                play = true;
+                b.clear();
+                validReplayChoice = true;
+            }
+            else if (toLower(replayChoice)._Equal("n"))
+            {
+                repeatPlay = false;
+                validReplayChoice = true;
+            }
+            else {
+                cout << "Invalid input" << endl;
+            }
+        } while (validReplayChoice == false);
+        replayChoice = "";
+    } while (repeatPlay);
+    cout << "Thank you for playing!!!\nGoodbye!!!" << endl;
+    return 0;
 }
 
 /*
@@ -174,7 +268,7 @@ User requirements:
     - Adding in singleplayer is a stretch goal
 
 
-Design: 
+Design:
     - We should use classes for this project.
         - Board class, player class
     - Board class (Design item)
