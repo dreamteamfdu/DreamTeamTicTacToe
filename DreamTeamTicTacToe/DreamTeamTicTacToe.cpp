@@ -122,13 +122,13 @@ int main() {
     while (play) { // Print the board
         b.print();
 
-        cout << nameFor(turn) << " (" << turn << ") — select a row: ";
+        cout << nameFor(turn) << " (" << turn << ") - select a row: ";
         while (!(cin >> row)) { // Input validation for rows
             cout << "Invalid input. Enter a number: ";
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
-        cout << nameFor(turn) << " (" << turn << ") — select a column: ";
+        cout << nameFor(turn) << " (" << turn << ") - select a column: ";
         while (!(cin >> col)) { // Input validation for colums
             cout << "Invalid input. Enter a number: ";
             cin.clear();
